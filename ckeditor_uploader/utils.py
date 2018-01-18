@@ -40,7 +40,7 @@ def get_storage_class():
                                  'django.core.files.storage.DefaultStorage'))()
 
 
-storage = get_storage_class
+storage = get_storage_class()
 
 
 def slugify_filename(filename):

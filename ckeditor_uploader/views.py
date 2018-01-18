@@ -88,7 +88,8 @@ class ImageUploadView(generic.View):
             except utils.NotAnImageException:
                 return HttpResponse("""
                     <script type='text/javascript'>
-                    window.parent.CKEDITOR.tools.callFunction({0}, '', 'Invalid file type.');
+                    window.parent.CKEDITOR.tools.callFunction({0}, '',
+                    'Invalid file type.');
                     </script>""".format(ck_func_num))
 
         saved_path = self._save_file(request, uploaded_file)
