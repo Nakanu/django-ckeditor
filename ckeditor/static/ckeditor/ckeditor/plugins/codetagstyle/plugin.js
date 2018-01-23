@@ -1,4 +1,4 @@
-CKEDITOR.plugins.add('codeTag', {
+CKEDITOR.plugins.add('codetagstyle', {
   icons: 'code',
   init(editor) {
     var style = new CKEDITOR.style({ element: 'code' }),
