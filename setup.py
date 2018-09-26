@@ -30,13 +30,13 @@ def get_source_files():
 
 
 setup(
-    name='django-ckeditor',
+    name='lc-django-ckeditor',
     version=version,
     description='Django admin CKEditor integration.',
     long_description=long_description,
     author='Shaun Sephton & Piotr Malinski',
     author_email='riklaunim@gmail.com',
-    url='https://github.com/django-ckeditor/django-ckeditor',
+    url='https://github.com/LeetCode-OpenSource/django-ckeditor',
     packages=find_packages(exclude=["*.demo"]),
     zip_safe=False,
     install_requires=[
