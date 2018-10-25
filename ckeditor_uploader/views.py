@@ -131,7 +131,6 @@ class ImageUploadView(generic.View):
 
         else:
             saved_path = storage.save(filename, uploaded_file)
-            print(filename, uploaded_file, saved_path)
         return saved_path
 
     @staticmethod
