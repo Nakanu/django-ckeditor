@@ -73,7 +73,6 @@ class ImageUploadView(generic.View):
         """
         Uploads a file and send back its URL to CKEditor.
         """
-        print('123', request.FILES)
         uploaded_file = request.FILES['upload']
 
         backend = image_processing.get_backend()
@@ -112,7 +111,7 @@ class ImageUploadView(generic.View):
     @staticmethod
     def _save_file(request, uploaded_file):
         filename = get_upload_filename(uploaded_file.name, request.user)
-        print("uploaded_file", uploaded_file)
+
         img_name, img_format = os.path.splitext(filename)
         IMAGE_QUALITY = getattr(settings, "IMAGE_QUALITY", 60)
 
@@ -132,7 +131,7 @@ class ImageUploadView(generic.View):
 
         else:
             saved_path = storage.save(filename, uploaded_file)
-        print("saved_path", saved_path)
+            print(filename, uploaded_file, saved_path)
         return saved_path
 
     @staticmethod

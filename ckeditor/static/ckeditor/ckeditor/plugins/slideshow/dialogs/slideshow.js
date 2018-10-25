@@ -442,7 +442,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 			if (dialog.imagesList.length == 0) {
 				var url = BASE_PATH + 'plugins/slideshow/images/placeholder.png';
 				var oOption = addOption(combo, 'IMG_0' + ' : ' + url.substring(url.lastIndexOf('/') + 1), url, dialog.getParentEditor().document);
-				dialog.imagesList.pushUnique([url, lang.imgTitle, lang.imgDesc, '50', '50']);
+				dialog.imagesList.pushUnique([url, '', '', '50', '50']);
 			}
 			// select index 0
 			setSelectedIndex(combo, 0);
@@ -677,7 +677,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 			} else {
 				w = w * ratio;
 			}
-			ind = dialog.imagesList.pushUnique([src, image.title, image.alt, w, h]);
+			ind = dialog.imagesList.pushUnique([src, '', '', w, h]);
 			var oOption;
 			if (ind >= 0) {
 				oOption = addOption(combo, 'IMG_' + ind + ' : ' + src.substring(src.lastIndexOf('/') + 1), src, dialog.getParentEditor().document);
@@ -693,7 +693,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		var combo = dialog.getContentElement('slideshowinfoid', 'imglistitemsid');
 		var url = BASE_PATH + 'plugins/slideshow/images/placeholder.png';
 		var oOption = addOption(combo, 'IMG_0' + ' : ' + url.substring(url.lastIndexOf('/') + 1), url, dialog.getParentEditor().document);
-		dialog.imagesList.pushUnique([url, lang.imgTitle, lang.imgDesc, '50', '50']);
+		dialog.imagesList.pushUnique([url, '', '', '50', '50']);
 		// select index 0
 		setSelectedIndex(combo, 0);
 		// Update dialog
@@ -808,9 +808,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		if (height == 0) {
 			height = dialog.params.getVal('pictheightid');
 		}
-		//	    if (width == 0) width = dialog.params.getVal('pictWidthtid');
-		//	    if (height == 0) height = "false";
-		//	    if (width <= 1) width = "false";
 		if (width == 0) {
 			width = "false";
 		}
@@ -846,9 +843,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		str += "$(\"#" + galleryId + "\").on(\"click\",\".ad-image\",function(){";
 		str += "var imgObj =$(this).find(\"img\");";
 		str += "var isrc=imgObj.attr(\"src\");";
-		//str += 'console.log("isrc:", isrc);';
-		//str += "isrc = isrc.substr(0, isrc.lastIndexOf('.'));";
-		//str += 'console.log("isrc:", isrc);';
 		str += "var ititle=null;";
 		str += "var idesc=null;";
 		str += "var iname=isrc.split('/');";
@@ -1011,160 +1005,27 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 
 
 	function ClickOkBtn(dialog) {
-    console.log(dialog.imagesList);
-    console.log(editor);
-    console.log(dialog.params.getVal('speedid'));
-
-    if (dialog.imagesList.length > 0) {
-      var duration = dialog.params.getVal('speedid');
+    if (dialog.imagesList && dialog.imagesList.length > 0) {
+			console.log(dialog.imagesList);
+      var duration = parseInt(dialog.params.getVal('speedid'), 10);
+			var height = parseInt(dialog.params.getVal('pictheightid'), 10);
+			var width = parseInt(dialog.params.getVal('pictwidthid'), 10)
       var diaporama = {timeline: []}
       diaporama["timeline"] = dialog.imagesList.map(img => ({image: img[0], duration: duration}));
-      console.log(diaporama);
-      console.log(document.cookie);
       var csrftoken = getCookie('csrftoken');
-      console.log(csrftoken);
-			console.log(CKEDITOR.tools.getCsrfToken());
-      console.log(JSON.stringify({value: diaporama}));
 			var formData = new FormData();
-			var parts = [
-			  new Blob(['you construct a file...'], {type: 'text/plain'}),
-			  JSON.stringify(diaporama),
-			  new Uint16Array([33])
-			];
-			var file = new File([JSON.stringify(diaporama)], '123.json', {type: "application/json"});
-			formData.append('upload', file, `${uuidv4()}.json`);
-			console.log(formData);
+			var fileName = `${uuidv4()}.json`;
+			var file = new File([JSON.stringify(diaporama)], fileName, {type: "application/json"});
+			formData.append('upload', file, fileName);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/ckeditor/upload/", true);
       xhr.setRequestHeader('x-csrftoken', csrftoken);
       xhr.send(formData);
       xhr.onload = function() {
-        console.log("HELLO")
-        console.log(this.responseText);
         var data = JSON.parse(this.responseText);
-        console.log("data", data);
-				editor.insertHtml(`<p>!?!../../../../../../..${data.url}!?!</p>`);
+				editor.insertHtml(`<p>!?!../../../../../../..${data.url}:${width},${height}!?!</p><br />`);
       }
     }
-    //
-
-
-		// var extraStyles = {},
-		// 	extraAttributes = {};
-    //
-		// dialog.openCloseStep = true;
-    //
-		// // Invoke the commit methods of all dialog elements, so the dialog.params array get Updated.
-		// dialog.commitContent(dialog);
-    //
-		// // Create a new DOM
-		// var slideshowDOM = createDOMdGalleryRun(dialog);
-    //
-		// // Add data tags to dom
-		// var i;
-		// for (i = 0; i < dialog.params.length; i += 1) {
-		// 	slideshowDOM.data(dialog.params[i][0], dialog.params[i][1]);
-		// }
-		// if (!(editor.config.slideshowDoNotLoadJquery && (editor.config.slideshowDoNotLoadJquery == true))) {
-		// 	var scriptjQuery = CKEDITOR.document.createElement('script', {
-		// 		attributes: {
-		// 			type: 'text/javascript',
-		// 			src: SCRIPT_JQUERY
-		// 		}
-		// 	});
-		// 	slideshowDOM.append(scriptjQuery);
-		// }
-		// // Add javascript for ""ad-gallery"
-		// // Be sure the path is correct and file is available !!
-		// var scriptAdGallery = CKEDITOR.document.createElement('script', {
-		// 	attributes: {
-		// 		type: 'text/javascript',
-		// 		src: SCRIPT_ADDGAL
-		// 	}
-		// });
-		// slideshowDOM.append(scriptAdGallery);
-    //
-		// if (dialog.params.getVal('openOnClickId') == true) {
-		// 	// Dynamically add CSS for "fancyBox"
-		// 	// Be sure the path is correct and file is available !!
-		// 	if (!(editor.config.slideshowDoNotLoadFancyBoxCss && (editor.config.slideshowDoNotLoadFancyBoxCss == true))) {
-		// 		var scriptFancyBoxCss = CKEDITOR.document.createElement('script', {
-		// 			attributes: {
-		// 				type: 'text/javascript'
-		// 			}
-		// 		});
-		// 		scriptFancyBoxCss.setText("(function($) { $('head').append('<link rel=\"stylesheet\" href=\"" + CSS_FANCYBOX + "\" type=\"text/css\" />'); })(jQuery);");
-		// 		slideshowDOM.append(scriptFancyBoxCss);
-		// 	}
-		// 	// Add javascript for ""fancyBox"
-		// 	// Be sure the path is correct and file is available !!
-		// 	if (!(editor.config.slideshowDoNotLoadFancyBoxScript && (editor.config.slideshowDoNotLoadFancyBoxScript == true))) {
-		// 		var scriptFancyBox = CKEDITOR.document.createElement('script', {
-		// 			attributes: {
-		// 				type: 'text/javascript',
-		// 				src: SCRIPT_FANCYBOX
-		// 			}
-		// 		});
-		// 		slideshowDOM.append(scriptFancyBox);
-		// 	}
-		// 	// Add RUN javascript for "fancybox"
-		// 	var scriptFancyboxRun = CKEDITOR.document.createElement('script', {
-		// 		attributes: {
-		// 			type: 'text/javascript'
-		// 		}
-		// 	});
-		// 	scriptFancyboxRun.setText(createScriptFancyBoxRun(dialog));
-		// 	slideshowDOM.append(scriptFancyboxRun);
-		// }
-		// // Add RUN javascript for "link"
-		// var scriptLinkRun = CKEDITOR.document.createElement('script', {
-		// 	attributes: {
-		// 		type: 'text/javascript'
-		// 	}
-		// });
-		// scriptLinkRun.setText(createScriptLinkRun(dialog));
-		// slideshowDOM.append(scriptLinkRun);
-    //
-		// // Dynamically add CSS for "ad-gallery"
-		// // Be sure the path is correct and file is available !!
-		// var scriptAdGalleryCss = CKEDITOR.document.createElement('script', {
-		// 	attributes: {
-		// 		type: 'text/javascript'
-		// 	}
-		// });
-		// scriptAdGalleryCss.setText("(function($) { $('head').append('<link rel=\"stylesheet\" href=\"" + CSS_ADDGAL + "\" type=\"text/css\" />'); })(jQuery);");
-		// slideshowDOM.append(scriptAdGalleryCss);
-    //
-		// // Add RUN javascript for "ad-Gallery"
-		// var scriptAdGalleryRun = CKEDITOR.document.createElement('script', {
-		// 	attributes: {
-		// 		type: 'text/javascript'
-		// 	}
-		// });
-		// scriptAdGalleryRun.setText(createScriptAdGalleryRun(dialog, 0, 0, 0));
-		// slideshowDOM.append(scriptAdGalleryRun);
-    //
-		// if (dialog.imagesList.length) {
-		// 	extraStyles.backgroundImage = 'url("' + dialog.imagesList[0][IMG_PARAM.URL] + '")';
-		// }
-		// extraStyles.backgroundSize = 'contain';
-		// extraStyles.backgroundRepeat = 'no-repeat';
-		// extraStyles.backgroundPosition = 'center';
-		// extraStyles.display = 'block';
-		// extraStyles.width = '64px';
-		// extraStyles.height = '64px';
-		// extraStyles.border = '1px solid black';
-		// // Create a new Fake Image
-		// var newFakeImage = editor.createFakeElement(slideshowDOM, 'cke_slideShow', 'slideShow', false);
-		// newFakeImage.setAttributes(extraAttributes);
-		// newFakeImage.setStyles(extraStyles);
-    //
-		// if (dialog.fakeImage) {
-		// 	newFakeImage.replace(dialog.fakeImage);
-		// 	editor.getSelection().selectElement(newFakeImage);
-		// } else {
-		// 	editor.insertElement(newFakeImage);
-		// }
 
 		cleanAll(dialog);
 		dialog.hide();
@@ -1190,8 +1051,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 				title: lang.validModif,
 				disabled: false,
 				onClick: function() {
-          // var combo = CKEDITOR.dialog.getContentElement('slideshowinfoid', 'imglistitemsid');
-
 					ClickOkBtn(this.getDialog());
 				}
 			}
@@ -1373,15 +1232,15 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 								{
 									type: 'vbox',
 									children: [
-                    {
-											type: 'button',
-											id: 'previewbtn',
-											style: 'margin-top:15px;margin-left:25px;',
-											label: lang.previewMode,
-											onClick: function() {
-												previewSlideShow(this.getDialog());
-											}
-										},
+                    // {
+										// 	type: 'button',
+										// 	id: 'previewbtn',
+										// 	style: 'margin-top:15px;margin-left:25px;',
+										// 	label: lang.previewMode,
+										// 	onClick: function() {
+										// 		previewSlideShow(this.getDialog());
+										// 	}
+										// },
 										{
 											type: 'button',
 											id: 'removeselectedbtn',
@@ -1430,11 +1289,30 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 						},
 						{
 							type: 'hbox',
+							style: 'margin-top:40px',
 							children: [{
+									type: 'text',
+									id: 'pictwidthid',
+									label: lang.pictWidth,
+									maxLength: 4,
+									style: 'width:100px;',
+									'default': '300',
+									onChange: function(api) {
+										var intRegex = /^\d+$/;
+										if (intRegex.test(this.getValue()) == false) {
+											this.setValue(300);
+										}
+										this.getDialog().params.updateVal(this.id, this.getValue());
+										displaySelected(this.getDialog());
+									},
+									commit: commitValue,
+									setup: loadValue
+								},
+								{
 									type: 'text',
 									id: 'pictheightid',
 									label: lang.pictHeight,
-									maxLength: 3,
+									maxLength: 4,
 									style: 'width:100px;',
 									'default': '300',
 									onChange: function(api) {
