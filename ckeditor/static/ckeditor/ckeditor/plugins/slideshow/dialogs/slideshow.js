@@ -230,11 +230,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		sValue = oOption.getValue();
 
 		oOption.remove();
-
-		//		alert(sText+ " / "+ sValue);
-		//		var result = re.exec(sText);
 		sText = sText.replace(re, "IMG_" + iFinalIndex);
-		//		alert(sText);
 		oOption = addOption(combo, sText, sValue, (!documentObject) ? null : documentObject, iFinalIndex);
 		setSelectedIndex(combo, iFinalIndex);
 
@@ -409,7 +405,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		combo.setValue(value[2]);
 		combo = dialog.getContentElement('slideshowinfoid', 'imgpreviewid');
 		combo = getSelect(combo);
-		//console.log( "VALUE IMG -> " +  value[iSelectedIndex] );
 		var imgHtml = '<div style="text-align:center;"> <img src="' + value[0] +
 			'" title="' + value[1] +
 			'" alt="' + value[2] +
@@ -477,7 +472,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		preview.removeListener('load', onImgLoadEvent);
 		preview.removeListener('error', onImgLoadErrorEvent);
 		preview.removeListener('abort', onImgLoadErrorEvent);
-		//console.log( "previewImage -> " + preview );
 		updateImgList(this);
 	};
 
@@ -498,15 +492,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		dialog.imagesList[getSlectedIndex(dialog)][IMG_PARAM.ALT] = val;
 		editeSelected(dialog);
 	}
-
-  function uploadImage(a,b,dialog) {
-    console.log(editor);
-    console.log(CKEDITOR.editor.uploadRepository);
-    if (!CKEDITOR.plugins.clipboard.isFileApiSupported) {
-      return
-    }
-
-  }
 
 	function previewSlideShow(dialog) {
 		var previewCombo = dialog.getContentElement('slideshowinfoid', 'framepreviewid');
@@ -826,7 +811,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		str += "if(ititle!='')ititle='<big>'+ititle+'</big>';";
 		str += "idesc=$(this).find(\"span\");";
 		str += "if(idesc)idesc=idesc.text();";
-		//		str += 'console.log("idesc:", idesc);';
 		str += "if (idesc.indexOf('IMAGE_LINK_') >= 0) {";
 		str += "idesc = '';";
 		str += "}";
@@ -864,15 +848,8 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		str += "ititle=$(this).find(\".ad-description-title\");";
 		str += "if(ititle)ititle=ititle.text();";
 		str += "idesc=$(this).find(\"span\");";
-		//	str += "console.log('desc0', idesc);";
 		str += "if(idesc)idesc=idesc.text();";
 		str += "if(idesc!=''){";
-		//	str += "console.log('desc1', idesc);";
-
-		//	str += "if (idesc.indexOf('LIEN:') == 0) {";
-		//	str += "idesc = idesc.substring(5);}";
-		//	str += "window.open(idesc);"
-		//	str += "}";
 		str += "var url=window.location.href.trim();";
 		str += "if (idesc.indexOf('IMAGE_LINK_TAB:') >= 0) {";
 		str += "	idesc = idesc.substring(15).trim();";
@@ -953,21 +930,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		return slideshowDOM;
 	}
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-  }
 
 	function uuidv4() {
 	  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -978,20 +940,17 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 
 	function ClickOkBtn(dialog) {
     if (dialog.imagesList && dialog.imagesList.length > 0) {
-			console.log(dialog.imagesList);
       var duration = parseInt(dialog.params.getVal('speedid'), 10);
 			var height = parseInt(dialog.params.getVal('pictheightid'), 10);
 			var width = parseInt(dialog.params.getVal('pictwidthid'), 10)
       var diaporama = {timeline: []}
       diaporama["timeline"] = dialog.imagesList.map(img => ({image: img[0], duration: duration}));
-      var csrftoken = getCookie('csrftoken');
 			var formData = new FormData();
 			var fileName = `${uuidv4()}.json`;
 			var file = new File([JSON.stringify(diaporama)], fileName, {type: "application/json"});
 			formData.append('upload', file, fileName);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/ckeditor/upload/", true);
-      xhr.setRequestHeader('x-csrftoken', csrftoken);
       xhr.send(formData);
       xhr.onload = function() {
         var data = JSON.parse(this.responseText);
@@ -1196,7 +1155,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 											type: 'button',
 											id: 'removeselectedbtn',
 											style: 'margin-left:25px;',
-											//style : 'display:none;',
 											label: lang.imgDelete,
 											onClick: function() {
 												removeSelected(this.getDialog());
@@ -1321,8 +1279,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 				initImgListFromFresh(this);
 				// Invoke the commit methods of all dialog elements, so the dialog.params array get Updated.
 				this.commitContent(this);
-				//				console.log( "Params New -> " + this.params );
-				//				console.log( "Images New -> " + this.imagesList );
 			} else {
 				this.slideshowDOM = slideshowDOM;
 				// Get the  reference of the slideSjow Images Container
