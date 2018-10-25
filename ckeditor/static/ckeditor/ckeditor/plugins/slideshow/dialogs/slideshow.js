@@ -524,23 +524,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		frame.close();
 	}
 
-	// 	function unprotectRealComments( html )
-	// 	{
-	// 		return html.replace( /<!--\{cke_protected\}\{C\}([\s\S]+?)-->/g,
-	// 			function( match, data )
-	// 			{
-	// 				return decodeURIComponent( data );
-	// 			});
-	// 	};
-	//
-	// 	function unprotectSource( html, editor )
-	// 	{
-	// 		return html.replace( /<!--\{cke_protected\}([\s\S]+?)-->/g, function( match, data )
-	// 			{
-	// 				return decodeURIComponent( data );
-	// 			});
-	// 	}
-
 	function updateFramePreview(dialog) {
 		var width = 436;
 		var height = 300;
@@ -563,19 +546,12 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		var strVar = "";
 		var jqueryStr = '<script src="' + SCRIPT_JQUERY + '" type="text/javascript"></script>';
 		strVar += "<head>";
-		//		if (editor.config.slideshowDoNotLoadJquery && (editor.config.slideshowDoNotLoadJquery == true)) {
-		//			jqueryStr = '';
-		//		}
 		strVar += jqueryStr;
 		strVar += "<script type=\"text\/javascript\" src=\"" + SCRIPT_ADDGAL + "\"><\/script>";
 		strVar += "<link rel=\"stylesheet\" type=\"text\/css\" href=\"" + CSS_ADDGAL + "\" \/>";
 		if (dialog.params.getVal('openOnClickId') == true) {
-			//if (!(editor.config.slideshowDoNotLoadFancyBoxCss && (editor.config.slideshowDoNotLoadFancyBoxCss == true))) {
 			strVar += "<link rel=\"stylesheet\" type=\"text\/css\" href=\"" + CSS_FANCYBOX + "\" \/>";
-			//}
-			//if (!(editor.config.slideshowDoNotLoadFancyBoxScript && (editor.config.slideshowDoNotLoadFancyBoxScript == true))) {
 			strVar += "<script type=\"text\/javascript\" src=\"" + SCRIPT_FANCYBOX + "\"><\/script>";
-			//}
 			strVar += "<script type=\"text\/javascript\">";
 			strVar += createScriptFancyBoxRun(dialog);
 			strVar += "<\/script>";
@@ -610,7 +586,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 			' class="cke_pasteframe"' +
 			' frameborder="10" ' +
 			' allowTransparency="false"' +
-			//				' src="' + 'data:text/html;charset=utf-8,' +  strVar + '"' +
 			' role="region"' +
 			' scrolling="no"' +
 			'></iframe>');
@@ -782,7 +757,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 	}
 
 	var numbering = function(id) {
-		//return CKEDITOR.tools.getNextId() + '_' + id;
 		return 'cke_' + randomChars(8) + '_' + id;
 	};
 
@@ -804,7 +778,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 			strHook = '';
 
 		strVar += "$(function() {";
-		//	    if (width == 0) width = "false";
 		if (height == 0) {
 			height = dialog.params.getVal('pictheightid');
 		}
@@ -820,7 +793,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 			", animation_speed: " + dialog.params.getVal('animspeedid') + strHook +
 			", update_window_hash: false, effect: '" + 'none' +
 			"',";
-		//alert(params);
 
 		var slideShowParams = " slideshow: { enable: false, autostart: " + dialog.params.getVal('autostartid') +
 			", start_label: '" + lang.labelStart + "'" +
@@ -1100,12 +1072,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 								action: 'Browse',
 								target: 'slideshowinfoid:txturlid',
 								url: editor.config.filebrowserImageBrowseUrl || editor.config.filebrowserBrowseUrl,
-                onSelect: function( fileUrl, errorMessage ) {
-                    console.log(editor.config.filebrowserImageBrowseUrl, editor.config.filebrowserBrowseUrl);
-                    console.log(editor.config.filebrowserImageUploadUrl, editor.config.filebrowserUploadUrl);
-                    alert( 'The url of uploaded file is: ' + fileUrl + '\nerrorMessage: ' + errorMessage );
-                    // return false;
-                }
 							},
 							label: lang.imgAdd
 						},
@@ -1122,11 +1088,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
                 filebrowser: {
                     action: 'QuickUpload',
                     target: 'slideshowinfoid:txturlid',
-                    onSelect: function( fileUrl, errorMessage ) {
-                        alert( 'The url of uploaded file is: ' + fileUrl + '\nerrorMessage: ' + errorMessage );
-                        // Do not call the built-in onSelect command.
-                        // return false;
-                    }
                 },
                 'for': [ 'slideshowinfoid', 'upload' ]
             }
@@ -1225,22 +1186,12 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 									style: 'height:125px;width:250px',
 									items: [],
 									onChange: function(api) {
-										//unselectIfNotUnique(this);
 										selectFirstIfNotUnique(this);
 									}
 								},
 								{
 									type: 'vbox',
 									children: [
-                    // {
-										// 	type: 'button',
-										// 	id: 'previewbtn',
-										// 	style: 'margin-top:15px;margin-left:25px;',
-										// 	label: lang.previewMode,
-										// 	onClick: function() {
-										// 		previewSlideShow(this.getDialog());
-										// 	}
-										// },
 										{
 											type: 'button',
 											id: 'removeselectedbtn',
@@ -1251,16 +1202,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 												removeSelected(this.getDialog());
 											}
 										},
-										// {
-										// 	type: 'button',
-										// 	id: 'editselectedbtn',
-										// 	style: 'margin-left:25px;',
-										// 	//style : 'display:none;',
-										// 	label: lang.imgEdit,
-										// 	onClick: function() {
-										// 		editeSelected(this.getDialog());
-										// 	}
-										// },
 										{
 											type: 'hbox',
 											children: [{
@@ -1296,11 +1237,11 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 									label: lang.pictWidth,
 									maxLength: 4,
 									style: 'width:100px;',
-									'default': '300',
+									'default': '500',
 									onChange: function(api) {
 										var intRegex = /^\d+$/;
 										if (intRegex.test(this.getValue()) == false) {
-											this.setValue(300);
+											this.setValue(500);
 										}
 										this.getDialog().params.updateVal(this.id, this.getValue());
 										displaySelected(this.getDialog());
@@ -1314,11 +1255,11 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 									label: lang.pictHeight,
 									maxLength: 4,
 									style: 'width:100px;',
-									'default': '300',
+									'default': '500',
 									onChange: function(api) {
 										var intRegex = /^\d+$/;
 										if (intRegex.test(this.getValue()) == false) {
-											this.setValue(300);
+											this.setValue(500);
 										}
 										this.getDialog().params.updateVal(this.id, this.getValue());
 										displaySelected(this.getDialog());
@@ -1408,10 +1349,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 
 				// Invoke the setup methods of all dialog elements, to set dialog elements values with DOM input data.
 				this.setupContent(this, true);
-				//updateFramePreview(this);
 				this.newSlideShowMode = false;
-				//				console.log( "Params Old -> " + this.params );
-				//				console.log( "Images Old -> " + this.imagesList );
 			}
 			this.openCloseStep = false;
 			previewSlideShow(this);
@@ -1421,17 +1359,6 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
 		// I just will return false, as the real OK Button has been redefined
 		//  -This was the only way I found to avoid dialog popup to close when hitting the keyboard "ENTER" Key !!
 		onOk: function() {
-			//			var okr = this.okRefresh;
-			//			if (this.okRefresh == true) {
-			//				console.log('OKOKOK 0 :'+this.okRefresh);
-			//				this.okRefresh = false;
-			//				this.commitContent(this);
-			//				myVar = setTimeout(
-			//						function(obj){
-			//									obj.okRefresh = true;
-			//									},500, this);
-			//			}
-
 			return false;
 		},
 
