@@ -954,7 +954,7 @@ CKEDITOR.dialog.add('slideshowDialog', function(editor) {
       xhr.send(formData);
       xhr.onload = function() {
         var data = JSON.parse(this.responseText);
-				editor.insertHtml(`<p>!?!../../../../../../..${data.url}:${width},${height}!?!</p><br />`);
+				editor.insertHtml(`<p>!?!${data.url}:${width},${height}!?!</p><br />`);
       }
     }
 
